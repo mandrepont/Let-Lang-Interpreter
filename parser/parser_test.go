@@ -732,3 +732,92 @@ func TestExample1Parse(t *testing.T) {
 				})
 		})
 }
+
+func TestExample2Parse(t *testing.T) {
+	input := []token.Token{
+		{token.LET, "let"},
+		{token.IDENT, "x"},
+		{token.ASSIGN, "="},
+		{token.INT, "11"},
+
+		{token.IN, "in"},
+		{token.LET, "let"},
+		{token.IDENT, "y"},
+		{token.ASSIGN, "="},
+		{token.INT, "20"},
+
+		{token.IN, "in"},
+		{token.IF, "if"},
+		{token.IS_ZERO, "iszero"},
+		{token.LPAREN, "("},
+		{token.MINUS, "minus"},
+		{token.LPAREN, "("},
+		{token.IDENT, "x"},
+		{token.COMMA, ","},
+		{token.INT, "11"},
+		{token.RPAREN, ")"},
+		{token.RPAREN, ")"},
+
+		{token.THEN, "then"},
+		{token.MINUS, "minus"},
+		{token.LPAREN, "("},
+		{token.IDENT, "y"},
+		{token.COMMA, ","},
+		{token.INT, "2"},
+		{token.RPAREN, ")"},
+
+		{token.ELSE, "else"},
+		{token.MINUS, "minus"},
+		{token.LPAREN, "("},
+		{token.IDENT, "y"},
+		{token.COMMA, ","},
+		{token.INT, "4"},
+		{token.RPAREN, ")"},
+
+		{token.EOF, ""},
+	}
+
+	p := New(input)
+	expression := p.ParseExpression()
+
+	if reflect.ValueOf(expression).IsNil() {
+		t.Fatalf("Parse expression should not be nil")
+	}
+	//This is about to be messy
+	testLetExpression(t, expression, "x",
+		func(e ast.Expression) {
+			testIntLit(t, e, 11)
+		},
+		func(e ast.Expression) {
+			testLetExpression(t, e, "y",
+				func(e ast.Expression) {
+					testIntLit(t, e, 20)
+				},
+				func(e ast.Expression) {
+					testIfThenElse(t, e,
+						func(e ast.Expression) {
+							testIsZero(t, e, func(e ast.Expression) {
+								testMinus(t, e, func(e ast.Expression) {
+									testIdent(t, e, "x")
+								}, func(e ast.Expression) {
+									testIntLit(t, e, 11)
+								})
+							})
+						},
+						func(e ast.Expression) {
+							testMinus(t, e, func(e ast.Expression) {
+								testIdent(t, e, "y")
+							}, func(e ast.Expression) {
+								testIntLit(t, e, 2)
+							})
+						},
+						func(e ast.Expression) {
+							testMinus(t, e, func(e ast.Expression) {
+								testIdent(t, e, "y")
+							}, func(e ast.Expression) {
+								testIntLit(t, e, 4)
+							})
+						})
+				})
+		})
+}
