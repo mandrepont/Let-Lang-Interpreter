@@ -3,7 +3,7 @@ package token
 type TokenType string
 
 type Token struct {
-	Type TokenType
+	Type    TokenType
 	Literal string
 }
 
@@ -14,14 +14,14 @@ func MakeToken(tokenType TokenType, char byte) Token {
 	}
 }
 
-func KeywordLookup (literal string) TokenType {
+func KeywordLookup(literal string) TokenType {
 	keywordsMap := map[string]TokenType{
-		"if": IF,
-		"else": ELSE,
-		"then": THEN,
-		"let": LET,
-		"in": IN,
-		"minus": MINUS,
+		"if":     IF,
+		"else":   ELSE,
+		"then":   THEN,
+		"let":    LET,
+		"in":     IN,
+		"minus":  MINUS,
 		"iszero": IS_ZERO,
 	}
 	if tokType, ok := keywordsMap[literal]; ok {
@@ -32,23 +32,23 @@ func KeywordLookup (literal string) TokenType {
 
 const (
 	ILLEGAL = "ILLEGAL"
-	EOF = "ILLEGAL"
+	EOF     = "ILLEGAL"
 
 	//Ident and lit
 	IDENT = "IDENT"
-	INT = "INT"
+	INT   = "INT"
 
 	//Keywords
-	LET = "LET"
-	IN = "IN"
-	IF = "IF"
-	THEN = "THEN"
-	ELSE = "ELSE"
+	LET     = "LET"
+	IN      = "IN"
+	IF      = "IF"
+	THEN    = "THEN"
+	ELSE    = "ELSE"
 	IS_ZERO = "IS_ZERO"
-	MINUS = "MINUS"
+	MINUS   = "MINUS"
 
 	ASSIGN = "="
-	COMMA = ","
+	COMMA  = ","
 	LPAREN = "("
 	RPAREN = ")"
 )

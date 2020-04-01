@@ -3,14 +3,14 @@ package lexer
 import "LetInterpreter/token"
 
 type Lexer struct {
-	input string
-	position int // The current position in the input
-	readPosition int // The current reading position (one after position)
-	ch byte // The current char we are reading.
+	input        string
+	position     int  // The current position in the input
+	readPosition int  // The current reading position (one after position)
+	ch           byte // The current char we are reading.
 }
 
-func New(input string) *Lexer  {
-	l := Lexer{input:input}
+func New(input string) *Lexer {
+	l := Lexer{input: input}
 	l.readChar()
 	return &l
 }
@@ -33,8 +33,8 @@ func (l *Lexer) peekChar() byte {
 	}
 }
 
-func isDigit(ch byte) bool { return ch >= '0' && ch <= '9' }
-func isLetter(ch byte) bool { return (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z')}
+func isDigit(ch byte) bool  { return ch >= '0' && ch <= '9' }
+func isLetter(ch byte) bool { return (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z') }
 
 func (l *Lexer) skipWhitespace() {
 	for l.ch == ' ' || l.ch == '\n' || l.ch == '\t' || l.ch == '\r' {
@@ -74,12 +74,16 @@ func (l *Lexer) NextToken() token.Token {
 
 func (l *Lexer) readIdent() string {
 	startPos := l.position
-	for isDigit(l.peekChar()) || isLetter(l.peekChar()) { l.readChar() }
-	return l.input[startPos:l.position+1]
+	for isDigit(l.peekChar()) || isLetter(l.peekChar()) {
+		l.readChar()
+	}
+	return l.input[startPos : l.position+1]
 }
 
 func (l *Lexer) readDigit() string {
 	startPos := l.position
-	for isDigit(l.peekChar()) { l.readChar() }
-	return l.input[startPos:l.position+1]
+	for isDigit(l.peekChar()) {
+		l.readChar()
+	}
+	return l.input[startPos : l.position+1]
 }

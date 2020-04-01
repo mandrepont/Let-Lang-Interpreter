@@ -8,11 +8,11 @@ import (
 )
 
 type Parser struct {
-	tokenQueue []token.Token
+	tokenQueue   []token.Token
 	currentToken token.Token
-	peekToken token.Token
-	position int
-	errors []string
+	peekToken    token.Token
+	position     int
+	errors       []string
 }
 
 func New(tokenQueue []token.Token) *Parser {
@@ -28,7 +28,7 @@ func (p *Parser) Errors() []string {
 func (p *Parser) nextToken() {
 	p.position++
 	p.currentToken = p.peekToken
-	if p.position + 1 >= len(p.tokenQueue) {
+	if p.position+1 >= len(p.tokenQueue) {
 		p.peekToken = token.Token{
 			Type:    token.EOF,
 			Literal: "",
@@ -74,10 +74,14 @@ func (p *Parser) ParseExpression() ast.Expression {
 func (p *Parser) parseLetExpression() *ast.LetExpression {
 	expr := &ast.LetExpression{Token: p.currentToken}
 
-	if !p.expectPeek(token.IDENT) { return nil }
+	if !p.expectPeek(token.IDENT) {
+		return nil
+	}
 	expr.Name = p.parseIdentifier()
 
-	if !p.expectPeek(token.ASSIGN) { return nil }
+	if !p.expectPeek(token.ASSIGN) {
+		return nil
+	}
 
 	p.nextToken()
 	expr.Value = p.ParseExpression()
@@ -86,7 +90,9 @@ func (p *Parser) parseLetExpression() *ast.LetExpression {
 		return nil
 	}
 
-	if !p.expectPeek(token.IN) { return nil }
+	if !p.expectPeek(token.IN) {
+		return nil
+	}
 
 	p.nextToken()
 	expr.In = p.ParseExpression()
@@ -100,7 +106,9 @@ func (p *Parser) parseLetExpression() *ast.LetExpression {
 
 func (p *Parser) parseMinusExpression() *ast.MinusExpression {
 	expr := &ast.MinusExpression{Token: p.currentToken}
-	if !p.expectPeek(token.LPAREN) { return nil }
+	if !p.expectPeek(token.LPAREN) {
+		return nil
+	}
 
 	p.nextToken()
 	expr.Arg1 = p.ParseExpression()
@@ -109,7 +117,9 @@ func (p *Parser) parseMinusExpression() *ast.MinusExpression {
 		return nil
 	}
 
-	if !p.expectPeek(token.COMMA) { return nil }
+	if !p.expectPeek(token.COMMA) {
+		return nil
+	}
 
 	p.nextToken()
 	expr.Arg2 = p.ParseExpression()
@@ -118,13 +128,17 @@ func (p *Parser) parseMinusExpression() *ast.MinusExpression {
 		return nil
 	}
 
-	if !p.expectPeek(token.RPAREN) { return nil }
+	if !p.expectPeek(token.RPAREN) {
+		return nil
+	}
 	return expr
 }
 
 func (p *Parser) parseIsZeroExpression() *ast.IsZeroExpression {
 	expr := &ast.IsZeroExpression{Token: p.currentToken}
-	if !p.expectPeek(token.LPAREN) { return nil }
+	if !p.expectPeek(token.LPAREN) {
+		return nil
+	}
 
 	p.nextToken()
 	expr.Arg1 = p.ParseExpression()
@@ -133,7 +147,9 @@ func (p *Parser) parseIsZeroExpression() *ast.IsZeroExpression {
 		return nil
 	}
 
-	if !p.expectPeek(token.RPAREN) { return nil }
+	if !p.expectPeek(token.RPAREN) {
+		return nil
+	}
 	return expr
 }
 
@@ -141,13 +157,15 @@ func (p *Parser) parseIfThenElseExpression() *ast.IfThenElseExpression {
 	expr := &ast.IfThenElseExpression{Token: p.currentToken}
 
 	p.nextToken()
-	expr.Predicate = p.ParseExpression()
-	if expr.Predicate == nil {
-		p.errors = append(p.errors, "Missing inner expression for Predicate")
+	expr.Value = p.ParseExpression()
+	if expr.Value == nil {
+		p.errors = append(p.errors, "Missing inner expression for Value")
 		return nil
 	}
 
-	if !p.expectPeek(token.THEN) { return nil }
+	if !p.expectPeek(token.THEN) {
+		return nil
+	}
 
 	p.nextToken()
 	expr.TrueBranch = p.ParseExpression()
@@ -156,7 +174,9 @@ func (p *Parser) parseIfThenElseExpression() *ast.IfThenElseExpression {
 		return nil
 	}
 
-	if !p.expectPeek(token.ELSE) { return nil }
+	if !p.expectPeek(token.ELSE) {
+		return nil
+	}
 
 	p.nextToken()
 	expr.FalseBranch = p.ParseExpression()

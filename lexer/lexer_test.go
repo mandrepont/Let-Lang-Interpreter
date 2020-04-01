@@ -228,4 +228,3 @@ func TestEOFWithToken(t *testing.T) {
 	}
 	checkTokens(t, input, expectedTokens)
 }
-

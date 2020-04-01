@@ -12,7 +12,9 @@ type expressionCheck func(expression ast.Expression)
 
 func checkForParseErrors(p *Parser, t *testing.T) {
 	errors := p.Errors()
-	if len(errors) == 0 { return }
+	if len(errors) == 0 {
+		return
+	}
 
 	t.Errorf("Parser has %d error(s)", len(errors))
 	for _, errMsg := range errors {
@@ -85,7 +87,7 @@ func testIfThenElse(t *testing.T, expression ast.Expression, predicateCheck expr
 	if !ok {
 		t.Fatalf("Parse Expression expected %T, but returned %T", &ast.IfThenElseExpression{}, expression)
 	}
-	predicateCheck(v.Predicate)
+	predicateCheck(v.Value)
 	trueCheck(v.TrueBranch)
 	falseCheck(v.FalseBranch)
 }
@@ -503,10 +505,10 @@ func TestIfThenElse(t *testing.T) {
 		{token.LPAREN, "("},
 		{token.IDENT, "y"},
 		{token.RPAREN, ")"},
-		{ token.THEN, "then" },
+		{token.THEN, "then"},
 		{token.IDENT, "y"},
-		{ token.ELSE, "else" },
-		{ token.INT, "2" },
+		{token.ELSE, "else"},
+		{token.INT, "2"},
 	}
 	p := New(input)
 	expression := p.ParseExpression()
@@ -528,10 +530,10 @@ func TestIfThenElse(t *testing.T) {
 func TestIfThenElseMissingPredicate(t *testing.T) {
 	input := []token.Token{
 		{token.IF, "if"},
-		{ token.THEN, "then" },
+		{token.THEN, "then"},
 		{token.IDENT, "y"},
-		{ token.ELSE, "else" },
-		{ token.INT, "2" },
+		{token.ELSE, "else"},
+		{token.INT, "2"},
 	}
 	p := New(input)
 	expression := p.ParseExpression()
@@ -540,7 +542,7 @@ func TestIfThenElseMissingPredicate(t *testing.T) {
 		t.Fatalf("Parse Expression did not return nil")
 	}
 	checkParseErrorsExist(p, t, []string{
-		"Missing inner expression for Predicate",
+		"Missing inner expression for Value",
 	})
 }
 
@@ -552,8 +554,8 @@ func TestIfThenElseMissingThen(t *testing.T) {
 		{token.IDENT, "y"},
 		{token.RPAREN, ")"},
 		{token.IDENT, "y"},
-		{ token.ELSE, "else" },
-		{ token.INT, "2" },
+		{token.ELSE, "else"},
+		{token.INT, "2"},
 	}
 	p := New(input)
 	expression := p.ParseExpression()
@@ -573,9 +575,9 @@ func TestIfThenElseMissingThenExpr(t *testing.T) {
 		{token.LPAREN, "("},
 		{token.IDENT, "y"},
 		{token.RPAREN, ")"},
-		{ token.THEN, "then" },
-		{ token.ELSE, "else" },
-		{ token.INT, "2" },
+		{token.THEN, "then"},
+		{token.ELSE, "else"},
+		{token.INT, "2"},
 	}
 	p := New(input)
 	expression := p.ParseExpression()
@@ -595,9 +597,9 @@ func TestIfThenElseMissingElse(t *testing.T) {
 		{token.LPAREN, "("},
 		{token.IDENT, "y"},
 		{token.RPAREN, ")"},
-		{ token.THEN, "then" },
+		{token.THEN, "then"},
 		{token.IDENT, "y"},
-		{ token.INT, "2" },
+		{token.INT, "2"},
 	}
 	p := New(input)
 	expression := p.ParseExpression()
@@ -617,9 +619,9 @@ func TestIfThenElseMissingElseExpr(t *testing.T) {
 		{token.LPAREN, "("},
 		{token.IDENT, "y"},
 		{token.RPAREN, ")"},
-		{ token.THEN, "then" },
+		{token.THEN, "then"},
 		{token.IDENT, "y"},
-		{ token.ELSE, "else" },
+		{token.ELSE, "else"},
 	}
 	p := New(input)
 	expression := p.ParseExpression()
