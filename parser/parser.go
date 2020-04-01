@@ -38,7 +38,6 @@ func (p *Parser) nextToken() {
 	}
 }
 
-func (p *Parser) curTokenIs(t token.TokenType) bool { return p.currentToken.Type == t }
 func (p *Parser) peekTokenIs(t token.TokenType) bool { return p.peekToken.Type == t }
 func (p *Parser) peekError(t token.TokenType) {
 	errorMsg := fmt.Sprintf("Excpected next token to be %s, got %s instead",
@@ -76,9 +75,7 @@ func (p *Parser) parseLetExpression() *ast.LetExpression {
 	expr := &ast.LetExpression{Token: p.currentToken}
 
 	if !p.expectPeek(token.IDENT) { return nil }
-
 	expr.Name = p.parseIdentifier()
-	if expr.Name == nil { return nil }
 
 	if !p.expectPeek(token.ASSIGN) { return nil }
 
