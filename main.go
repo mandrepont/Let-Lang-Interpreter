@@ -6,10 +6,12 @@ import (
 	"LetInterpreter/lexer"
 	"LetInterpreter/parser"
 	"LetInterpreter/token"
+	"bufio"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
+	"strings"
 )
 
 func main() {
@@ -17,8 +19,10 @@ func main() {
 	if len(os.Args) == 2 {
 		fileName = os.Args[1]
 	} else {
-		println("Usage:\n go run main.go 'file_to_eval.let'")
-		return
+		fmt.Print("Please input the file that contains the let program: ")
+		reader := bufio.NewReader(os.Stdin)
+		fileName, _ = reader.ReadString('\n')
+		fileName = strings.ReplaceAll(fileName, "\n", "")
 	}
 	content, err := ioutil.ReadFile(fileName)
 	if err != nil {
@@ -26,6 +30,8 @@ func main() {
 		return
 	}
 	text := string(content)
+	fmt.Println("Let Program:")
+	fmt.Println(text)
 	tokens := getTokenList(text)
 	root := getAst(tokens)
 	printEvalResult(root)
