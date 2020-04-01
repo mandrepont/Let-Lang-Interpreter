@@ -1,11 +1,11 @@
 package main
 
 import (
-	"LetInterpreter/ast"
-	"LetInterpreter/evaluator"
-	"LetInterpreter/lexer"
-	"LetInterpreter/parser"
-	"LetInterpreter/token"
+	"let_lang_proj_michael_andrepont/ast"
+	"let_lang_proj_michael_andrepont/evaluator"
+	"let_lang_proj_michael_andrepont/lexer"
+	"let_lang_proj_michael_andrepont/parser"
+	"let_lang_proj_michael_andrepont/token"
 	"bufio"
 	"fmt"
 	"io/ioutil"

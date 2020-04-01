@@ -1,7 +1,7 @@
 package ast
 
 import (
-	"LetInterpreter/token"
+	"let_lang_proj_michael_andrepont/token"
 	"errors"
 	"fmt"
 	"math"

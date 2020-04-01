@@ -1,7 +1,7 @@
 package evaluator
 
 import (
-	"LetInterpreter/ast"
+	"let_lang_proj_michael_andrepont/ast"
 	"errors"
 	"fmt"
 )

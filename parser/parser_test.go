@@ -1,8 +1,8 @@
 package parser
 
 import (
-	"LetInterpreter/ast"
-	"LetInterpreter/token"
+	"let_lang_proj_michael_andrepont/ast"
+	"let_lang_proj_michael_andrepont/token"
 	"reflect"
 	"strings"
 	"testing"

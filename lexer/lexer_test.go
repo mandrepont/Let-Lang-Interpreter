@@ -1,7 +1,7 @@
 package lexer
 
 import (
-	"LetInterpreter/token"
+	"let_lang_proj_michael_andrepont/token"
 	"testing"
 )
 

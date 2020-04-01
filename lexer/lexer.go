@@ -1,6 +1,6 @@
 package lexer
 
-import "LetInterpreter/token"
+import "let_lang_proj_michael_andrepont/token"
 
 type Lexer struct {
 	input        string
