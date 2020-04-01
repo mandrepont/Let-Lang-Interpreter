@@ -72,7 +72,7 @@ func (p *Parser) ParseExpression() ast.Expression {
 }
 
 func (p *Parser) parseLetExpression() *ast.LetExpression {
-	expr := &ast.LetExpression{Token: p.currentToken}
+	expr := &ast.LetExpression{BaseExpression: ast.BaseExpression{Token: p.currentToken}}
 
 	if !p.expectPeek(token.IDENT) {
 		return nil
@@ -105,7 +105,7 @@ func (p *Parser) parseLetExpression() *ast.LetExpression {
 }
 
 func (p *Parser) parseMinusExpression() *ast.MinusExpression {
-	expr := &ast.MinusExpression{Token: p.currentToken}
+	expr := &ast.MinusExpression{BaseExpression: ast.BaseExpression{Token: p.currentToken}}
 	if !p.expectPeek(token.LPAREN) {
 		return nil
 	}
@@ -135,7 +135,7 @@ func (p *Parser) parseMinusExpression() *ast.MinusExpression {
 }
 
 func (p *Parser) parseIsZeroExpression() *ast.IsZeroExpression {
-	expr := &ast.IsZeroExpression{Token: p.currentToken}
+	expr := &ast.IsZeroExpression{BaseExpression: ast.BaseExpression{Token: p.currentToken}}
 	if !p.expectPeek(token.LPAREN) {
 		return nil
 	}
@@ -154,7 +154,7 @@ func (p *Parser) parseIsZeroExpression() *ast.IsZeroExpression {
 }
 
 func (p *Parser) parseIfThenElseExpression() *ast.IfThenElseExpression {
-	expr := &ast.IfThenElseExpression{Token: p.currentToken}
+	expr := &ast.IfThenElseExpression{BaseExpression: ast.BaseExpression{Token: p.currentToken}}
 
 	p.nextToken()
 	expr.Value = p.ParseExpression()
@@ -190,8 +190,8 @@ func (p *Parser) parseIfThenElseExpression() *ast.IfThenElseExpression {
 
 func (p *Parser) parseIdentifier() *ast.Identifier {
 	ident := &ast.Identifier{
-		Token: p.currentToken,
-		Value: p.currentToken.Literal,
+		BaseExpression: ast.BaseExpression{Token: p.currentToken},
+		Value:          p.currentToken.Literal,
 	}
 	return ident
 }
@@ -205,8 +205,8 @@ func (p *Parser) parseIntLiteral() *ast.IntLiteral {
 		return nil
 	}
 	intLit := &ast.IntLiteral{
-		Token: p.currentToken,
-		Value: value,
+		BaseExpression: ast.BaseExpression{Token: p.currentToken},
+		Value:          value,
 	}
 	return intLit
 }

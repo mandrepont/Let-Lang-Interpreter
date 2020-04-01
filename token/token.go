@@ -32,7 +32,7 @@ func KeywordLookup(literal string) TokenType {
 
 const (
 	ILLEGAL = "ILLEGAL"
-	EOF     = "ILLEGAL"
+	EOF     = "EOF"
 
 	//Ident and lit
 	IDENT = "IDENT"

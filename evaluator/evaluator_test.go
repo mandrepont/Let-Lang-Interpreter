@@ -11,7 +11,7 @@ import (
 func makeInt(val int) *ast.IntLiteral      { return &ast.IntLiteral{Value: val} }
 func makeIdent(val string) *ast.Identifier { return &ast.Identifier{Value: val} }
 
-func checkEvalResult(t *testing.T, expression ast.Expression, env []ast.Binding, expected int) {
+func checkEvalResult(t *testing.T, expression ast.Expression, env ast.BindingList, expected int) {
 	result, err := evalExpression(expression, env)
 	if err != nil {
 		t.Fatal(err.Error())
@@ -35,17 +35,17 @@ func TestLetEval(t *testing.T) {
 		Value: makeInt(expected),
 		In:    makeIdent("y"),
 	}
-	checkEvalResult(t, &expression, []ast.Binding{}, expected)
+	checkEvalResult(t, &expression, ast.BindingList{}, expected)
 }
 
 func TestIsZeroEvalTrue(t *testing.T) {
 	expression := ast.IsZeroExpression{Arg1: makeInt(0)}
-	checkEvalResult(t, &expression, []ast.Binding{}, 1)
+	checkEvalResult(t, &expression, ast.BindingList{}, 1)
 }
 
 func TestIsZeroEvalFalse(t *testing.T) {
 	expression := ast.IsZeroExpression{Arg1: makeInt(10)}
-	checkEvalResult(t, &expression, []ast.Binding{}, 0)
+	checkEvalResult(t, &expression, ast.BindingList{}, 0)
 }
 
 func TestMinusEval(t *testing.T) {
@@ -63,13 +63,13 @@ func TestMinusEval(t *testing.T) {
 	for _, tc := range x {
 		t.Run(fmt.Sprintf("%d-%d=%d", tc.arg1, tc.arg2, tc.result), func(t *testing.T) {
 			expression := ast.MinusExpression{Arg1: makeInt(tc.arg1), Arg2: makeInt(tc.arg2)}
-			checkEvalResult(t, &expression, []ast.Binding{}, tc.result)
+			checkEvalResult(t, &expression, ast.BindingList{}, tc.result)
 		})
 	}
 }
 
 func TestIdentBasic(t *testing.T) {
-	e := []ast.Binding{
+	e := ast.BindingList{
 		{VarName: "x", Value: 33},
 		{VarName: "test", Value: 22},
 	}
@@ -77,7 +77,7 @@ func TestIdentBasic(t *testing.T) {
 }
 
 func TestIdentShadowed(t *testing.T) {
-	e := []ast.Binding{
+	e := ast.BindingList{
 		{VarName: "test", Value: 33},
 		{VarName: "test", Value: 22},
 	}
@@ -85,9 +85,9 @@ func TestIdentShadowed(t *testing.T) {
 }
 
 func TestIntLit(t *testing.T) {
-	checkEvalResult(t, makeInt(0), []ast.Binding{}, 0)
-	checkEvalResult(t, makeInt(math.MaxInt32), []ast.Binding{}, math.MaxInt32)
-	checkEvalResult(t, makeInt(math.MinInt32), []ast.Binding{}, math.MinInt32)
+	checkEvalResult(t, makeInt(0), ast.BindingList{}, 0)
+	checkEvalResult(t, makeInt(math.MaxInt32), ast.BindingList{}, math.MaxInt32)
+	checkEvalResult(t, makeInt(math.MinInt32), ast.BindingList{}, math.MinInt32)
 }
 
 func TestIfThenElseEvalTrue(t *testing.T) {
@@ -96,7 +96,7 @@ func TestIfThenElseEvalTrue(t *testing.T) {
 		TrueBranch:  makeInt(22),
 		FalseBranch: makeInt(33),
 	}
-	checkEvalResult(t, &expression, []ast.Binding{}, 22)
+	checkEvalResult(t, &expression, ast.BindingList{}, 22)
 }
 
 func TestIfThenElseEvalFalse(t *testing.T) {
@@ -106,19 +106,19 @@ func TestIfThenElseEvalFalse(t *testing.T) {
 		TrueBranch:  makeInt(22),
 		FalseBranch: makeInt(33),
 	}
-	checkEvalResult(t, &expression, []ast.Binding{}, 33)
+	checkEvalResult(t, &expression, ast.BindingList{}, 33)
 	expression.Value = makeInt(2)
-	checkEvalResult(t, &expression, []ast.Binding{}, 33)
+	checkEvalResult(t, &expression, ast.BindingList{}, 33)
 	expression.Value = makeInt(-1)
 }
 
 func TestIdentNotFoundEmptyEnv(t *testing.T) {
-	_, err := evalExpression(makeIdent("test"), []ast.Binding{})
+	_, err := evalExpression(makeIdent("test"), ast.BindingList{})
 	checkErrorResult(t, err, "Could not find variable name: test in env of")
 }
 
 func TestIdentNotFoundNotEmptyEnv(t *testing.T) {
-	e := []ast.Binding{
+	e := ast.BindingList{
 		{VarName: "x", Value: 33},
 		{VarName: "test", Value: 22},
 	}
@@ -132,7 +132,7 @@ func TestLetInvalidValue(t *testing.T) {
 		Value: makeIdent("x"),
 		In:    makeInt(7),
 	}
-	_, err := evalExpression(&expression, []ast.Binding{})
+	_, err := evalExpression(&expression, ast.BindingList{})
 	checkErrorResult(t, err, "Could not find variable name: x in env of")
 }
 
@@ -140,7 +140,7 @@ func TestIsZeroInvalidArg(t *testing.T) {
 	expression := ast.IsZeroExpression{
 		Arg1: makeIdent("x"),
 	}
-	_, err := evalExpression(&expression, []ast.Binding{})
+	_, err := evalExpression(&expression, ast.BindingList{})
 	checkErrorResult(t, err, "Could not find variable name: x in env of")
 }
 
@@ -148,7 +148,7 @@ func TestMinusInvalidArg1(t *testing.T) {
 	expression := ast.MinusExpression{
 		Arg1: makeIdent("x"),
 	}
-	_, err := evalExpression(&expression, []ast.Binding{})
+	_, err := evalExpression(&expression, ast.BindingList{})
 	checkErrorResult(t, err, "Could not find variable name: x in env of")
 }
 
@@ -157,7 +157,7 @@ func TestMinusInvalidArg2(t *testing.T) {
 		Arg1: makeIdent("x"),
 		Arg2: makeIdent("y"),
 	}
-	_, err := evalExpression(&expression, []ast.Binding{{VarName: "x", Value: 8}})
+	_, err := evalExpression(&expression, ast.BindingList{{VarName: "x", Value: 8}})
 	checkErrorResult(t, err, "Could not find variable name: y in env of")
 }
 
@@ -165,7 +165,7 @@ func TestIfThenElseInvalidPredicate(t *testing.T) {
 	expression := ast.IfThenElseExpression{
 		Value: makeIdent("x"),
 	}
-	_, err := evalExpression(&expression, []ast.Binding{})
+	_, err := evalExpression(&expression, ast.BindingList{})
 	checkErrorResult(t, err, "Could not find variable name: x in env of")
 }
 
@@ -234,7 +234,7 @@ func TestAssignmentExampleTwo(t *testing.T) {
 			},
 		},
 	}
-	checkEvalResult(t, &root, []ast.Binding{}, 18)
+	checkEvalResult(t, &root, ast.BindingList{}, 18)
 	root.Value = makeInt(10)
-	checkEvalResult(t, &root, []ast.Binding{}, 16)
+	checkEvalResult(t, &root, ast.BindingList{}, 16)
 }
